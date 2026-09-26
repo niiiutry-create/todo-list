@@ -1,0 +1,767 @@
+<meta charset="utf-8">
+<title>たつお の ToDoリスト ✅</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<style>
+  :root{
+    --bg:#FAF1E6;
+    --surface:#FFFDF9;
+    --surface-2:#FFF7EC;
+    --ink:#2B2420;
+    --ink-muted:#8A7F73;
+    --accent:#E0623A;
+    --accent-ink:#FFFBF6;
+    --accent-soft:#F3C9B7;
+    --accent-soft-ink:#8A4224;
+    --divider:#E8DCCB;
+    --danger:#B0392E;
+    --danger-ink:#FFF3EF;
+    --success:#5B8A66;
+    --success-ink:#FFFBF6;
+    --mark-blue:#9ED4E8;
+    --mark-blue-ink:#0B4A61;
+    --mark-yellow:#FFD93D;
+    --mark-yellow-ink:#6B4E00;
+    --shadow: 0 1px 2px rgba(43,36,32,0.06), 0 6px 20px rgba(43,36,32,0.06);
+    --radius-lg: 20px;
+    --radius-md: 12px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#1C1815;
+      --surface:#241E19;
+      --surface-2:#2A2320;
+      --ink:#F3E9DD;
+      --ink-muted:#9C8E7E;
+      --accent:#F2825C;
+      --accent-ink:#241005;
+      --accent-soft:#6E4838;
+      --accent-soft-ink:#FBE3D6;
+      --divider:#3A322A;
+      --danger:#E2685A;
+      --danger-ink:#2A0F0A;
+      --success:#7FBF95;
+      --success-ink:#0E2016;
+      --mark-blue:#6FB6CE;
+      --mark-blue-ink:#062A33;
+      --mark-yellow:#F2C531;
+      --mark-yellow-ink:#3A2900;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#1C1815;
+    --surface:#241E19;
+    --surface-2:#2A2320;
+    --ink:#F3E9DD;
+    --ink-muted:#9C8E7E;
+    --accent:#F2825C;
+    --accent-ink:#241005;
+    --accent-soft:#6E4838;
+    --accent-soft-ink:#FBE3D6;
+    --divider:#3A322A;
+    --danger:#E2685A;
+    --danger-ink:#2A0F0A;
+    --success:#7FBF95;
+    --success-ink:#0E2016;
+    --mark-blue:#6FB6CE;
+    --mark-blue-ink:#062A33;
+    --mark-yellow:#F2C531;
+    --mark-yellow-ink:#3A2900;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+  }
+
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body{ height:100%; overflow:hidden; touch-action:manipulation; }
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:-apple-system,"SF Pro JP",BlinkMacSystemFont,"Hiragino Sans","Hiragino Kaku Gothic ProN",system-ui,sans-serif;
+    overscroll-behavior-y:none;
+    display:flex;
+    justify-content:center;
+  }
+  .app{
+    width:100%;
+    max-width:480px;
+    height:100dvh;
+    display:flex;
+    flex-direction:column;
+    padding:calc(env(safe-area-inset-top) + 18px) 16px calc(env(safe-area-inset-bottom) + 12px);
+    gap:14px;
+    overflow:hidden;
+  }
+
+  .topbar{
+    flex:0 0 auto;
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:10px;
+    padding:0 4px;
+  }
+  .topbar h1{
+    margin:0;
+    font-size:22px;
+    font-weight:800;
+    letter-spacing:-0.02em;
+  }
+  .count{
+    font-size:13px;
+    font-weight:600;
+    color:var(--ink-muted);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .addbar{
+    flex:0 0 auto;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    background:var(--surface);
+    border:1px solid var(--divider);
+    border-radius:var(--radius-lg);
+    padding:8px 8px 8px 12px;
+    box-shadow:var(--shadow);
+  }
+  .mark-input{
+    width:44px;
+    height:34px;
+    flex:0 0 44px;
+  }
+  .name-input{
+    flex:1;
+    min-width:0;
+    border:none;
+    background:transparent;
+    font-size:20px;
+    line-height:1.1;
+    color:var(--ink);
+    outline:none;
+    padding:8px 4px;
+  }
+  .name-input::placeholder{ color:var(--ink-muted); }
+  .add-btn{
+    flex:0 0 auto;
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    border:none;
+    background:var(--accent-soft);
+    color:var(--accent-soft-ink);
+    font-size:20px;
+    line-height:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    transition:transform .12s ease;
+  }
+  .add-btn:active{ transform:scale(0.9); }
+
+  .list{
+    list-style:none;
+    margin:0;
+    padding:0;
+    background:var(--surface);
+    border-radius:var(--radius-lg);
+    border:1px solid var(--divider);
+    box-shadow:var(--shadow);
+    flex:1 1 auto;
+    min-height:0;
+    overflow-y:auto;
+    overflow-x:hidden;
+    overscroll-behavior-y:contain;
+  }
+  .empty{
+    padding:34px 16px;
+    text-align:center;
+    color:var(--ink-muted);
+    font-size:14px;
+  }
+
+  .row-wrapper{
+    position:relative;
+    overflow:hidden;
+    border-bottom:1px solid var(--divider);
+  }
+  .row-wrapper:last-child{ border-bottom:none; }
+
+  .row-delete-bg{
+    position:absolute;
+    top:0; bottom:0; left:50%; right:0;
+    display:flex;
+    align-items:stretch;
+    justify-content:flex-end;
+    background:var(--danger);
+  }
+  .delete-btn{
+    width:84px;
+    border:none;
+    background:transparent;
+    color:var(--danger-ink);
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:0.02em;
+    cursor:pointer;
+  }
+
+  .row-complete-bg{
+    position:absolute;
+    top:0; bottom:0; left:0; right:50%;
+    display:flex;
+    align-items:center;
+    justify-content:flex-start;
+    background:var(--success);
+  }
+  .complete-label{
+    width:84px;
+    text-align:center;
+    color:var(--success-ink);
+    font-size:13px;
+    font-weight:700;
+    letter-spacing:0.02em;
+  }
+
+  .row{
+    position:relative;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background:var(--surface);
+    padding:9.5px 14px;
+    transform:translateX(0);
+    will-change:transform;
+    touch-action:none;
+    -webkit-touch-callout:none;
+    -webkit-user-select:none;
+    user-select:none;
+  }
+  .row.no-transition{ transition:none !important; }
+  .row:not(.no-transition){ transition:transform .18s ease; }
+  .row.placeholder{ opacity:0; }
+
+  .mark-cell{
+    flex:0 0 40px;
+    width:40px;
+    height:26px;
+  }
+
+  .priority-swatch{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:8px;
+    border:1px dashed var(--divider);
+    background:var(--surface-2);
+    padding:0;
+    cursor:pointer;
+    font-size:12px;
+    font-weight:700;
+    line-height:1;
+    color:var(--ink-muted);
+    transition:background-color .12s ease, border-color .12s ease, color .12s ease;
+  }
+  .priority-swatch[data-priority="1"]{ background:var(--mark-blue); border-color:var(--mark-blue); border-style:solid; color:var(--mark-blue-ink); }
+  .priority-swatch[data-priority="2"]{ background:var(--mark-yellow); border-color:var(--mark-yellow); border-style:solid; color:var(--mark-yellow-ink); }
+  .priority-swatch:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+
+  .item-text{
+    flex:1;
+    min-width:0;
+    font-size:19px;
+    font-weight:600;
+    line-height:1.3;
+    word-break:break-word;
+    color:var(--ink);
+  }
+  .row.done .item-text{
+    text-decoration:line-through;
+    text-decoration-thickness:1.5px;
+    color:var(--ink-muted);
+  }
+  .row.done .mark-cell{ opacity:0.55; }
+
+  .buy-btn{
+    flex:0 0 auto;
+    border:none;
+    border-radius:999px;
+    background:var(--accent-soft);
+    color:var(--accent-soft-ink);
+    font-size:14px;
+    font-weight:700;
+    letter-spacing:0.02em;
+    padding:6px 12px;
+    cursor:pointer;
+    white-space:nowrap;
+    transition:transform .12s ease;
+  }
+  .buy-btn:active{ transform:scale(0.92); }
+
+  .purchased-label{
+    flex:0 0 auto;
+    font-size:15px;
+    font-weight:600;
+    color:var(--ink-muted);
+    white-space:nowrap;
+  }
+
+  .drag-ghost{
+    position:fixed;
+    left:0;
+    pointer-events:none;
+    z-index:1000;
+    background:var(--surface);
+    border-radius:var(--radius-md);
+    box-shadow:0 10px 24px rgba(0,0,0,0.22);
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:13px 14px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .row, .add-btn{ transition:none !important; }
+  }
+</style>
+
+<div class="app">
+  <header class="topbar">
+    <h1>たつお の ToDoリスト ✅</h1>
+    <div class="topbar-right">
+      <span class="count" id="count">0件</span>
+    </div>
+  </header>
+
+  <div class="addbar">
+    <button type="button" id="markInput" class="mark-input priority-swatch" data-priority="0" aria-label="マーク: なし"></button>
+    <input id="itemInput" name="item-query" class="name-input" placeholder="やることを入力" aria-label="タスク名" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+    <button id="addBtn" class="add-btn" aria-label="追加">＋</button>
+  </div>
+
+  <ul class="list" id="list"></ul>
+</div>
+
+<script>
+(function(){
+  var STORAGE_KEY = 'todo-list-v1';
+  var OPEN_OFFSET = -84;
+  var COMPLETE_OFFSET = 84;
+  var COMPLETE_THRESHOLD = 56;
+  var MARK_TEXT = ['', '防府', '糸島'];
+  var MARK_LABELS = ['なし', '防府', '糸島'];
+  function setSwatchState(el, level){
+    el.dataset.priority = String(level);
+    el.textContent = MARK_TEXT[level];
+    el.setAttribute('aria-label', 'マーク: ' + MARK_LABELS[level]);
+  }
+  var listEl = document.getElementById('list');
+  var countEl = document.getElementById('count');
+  var markInput = document.getElementById('markInput');
+  var nameInput = document.getElementById('itemInput');
+  var addBtn = document.getElementById('addBtn');
+
+  // ---- Local-only storage ----
+  // すべてのデータは端末内の localStorage にのみ保存され、
+  // 他の端末やブラウザからこのページを開いても表示されません。
+  function load(){
+    try{
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if(raw) return JSON.parse(raw);
+    }catch(e){}
+    return [];
+  }
+  function save(){
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(items)); }catch(e){}
+  }
+  function uid(){ return Math.random().toString(36).slice(2)+Date.now().toString(36); }
+
+  var items = load();
+  var openId = null;
+
+  var momentumId = null;
+  function cancelMomentum(){
+    if(momentumId){ cancelAnimationFrame(momentumId); momentumId = null; }
+  }
+  function startMomentum(v){
+    cancelMomentum();
+    var lastTs = null;
+    function step(ts){
+      if(lastTs == null) lastTs = ts;
+      var dt = Math.min(ts - lastTs, 32);
+      lastTs = ts;
+      v *= Math.pow(0.05, dt / 1000);
+      var maxScroll = listEl.scrollHeight - listEl.clientHeight;
+      var next = listEl.scrollTop + v * dt;
+      if(next <= 0){ listEl.scrollTop = 0; momentumId = null; return; }
+      if(next >= maxScroll){ listEl.scrollTop = maxScroll; momentumId = null; return; }
+      listEl.scrollTop = next;
+      if(Math.abs(v) < 0.02){ momentumId = null; return; }
+      momentumId = requestAnimationFrame(step);
+    }
+    momentumId = requestAnimationFrame(step);
+  }
+
+  function render(){
+    listEl.innerHTML = '';
+    countEl.textContent = items.length + '件';
+    if(items.length === 0){
+      var empty = document.createElement('li');
+      empty.className = 'empty';
+      empty.textContent = 'リストは空です。上の欄から追加してください。';
+      listEl.appendChild(empty);
+      return;
+    }
+    items.forEach(function(item){
+      listEl.appendChild(buildRow(item));
+    });
+  }
+
+  function buildRow(item){
+    var wrapper = document.createElement('li');
+    wrapper.className = 'row-wrapper';
+    wrapper.dataset.id = item.id;
+
+    var completeBg = document.createElement('div');
+    completeBg.className = 'row-complete-bg';
+    var completeLabel = document.createElement('span');
+    completeLabel.className = 'complete-label';
+    completeLabel.textContent = item.done ? '↺ 取り消し' : '✓ 完了';
+    completeBg.appendChild(completeLabel);
+
+    var delBg = document.createElement('div');
+    delBg.className = 'row-delete-bg';
+    var delBtn = document.createElement('button');
+    delBtn.className = 'delete-btn';
+    delBtn.type = 'button';
+    delBtn.textContent = '削除';
+    delBtn.addEventListener('click', function(){ removeItem(item.id); });
+    delBg.appendChild(delBtn);
+
+    var row = document.createElement('div');
+    row.className = 'row' + (item.done ? ' done' : '');
+    row.dataset.id = item.id;
+
+    var mark = document.createElement('button');
+    mark.type = 'button';
+    mark.className = 'mark-cell priority-swatch';
+    setSwatchState(mark, item.priority || 0);
+    mark.addEventListener('pointerdown', function(e){ e.stopPropagation(); });
+    mark.addEventListener('click', function(e){
+      e.stopPropagation();
+      item.priority = ((item.priority || 0) + 1) % MARK_TEXT.length;
+      setSwatchState(mark, item.priority);
+      save();
+    });
+
+    var text = document.createElement('span');
+    text.className = 'item-text';
+    text.textContent = item.text;
+
+    row.appendChild(mark);
+    row.appendChild(text);
+
+    if(item.done){
+      var purchasedLabel = document.createElement('span');
+      purchasedLabel.className = 'purchased-label';
+      if(item.doneAt){
+        purchasedLabel.textContent = item.doneAt.m + '/' + item.doneAt.d + ' 実施';
+      }
+      row.appendChild(purchasedLabel);
+    } else {
+      var buyBtn = document.createElement('button');
+      buyBtn.type = 'button';
+      buyBtn.className = 'buy-btn';
+      buyBtn.textContent = '実施';
+      buyBtn.addEventListener('pointerdown', function(e){ e.stopPropagation(); });
+      buyBtn.addEventListener('click', function(e){
+        e.stopPropagation();
+        item.priority = 0;
+        toggleDone(item, true);
+      });
+      row.appendChild(buyBtn);
+    }
+
+    wrapper.appendChild(completeBg);
+    wrapper.appendChild(delBg);
+    wrapper.appendChild(row);
+
+    attachRowGestures(wrapper, row, item);
+    return wrapper;
+  }
+
+  function toggleDone(item, recordDone){
+    var wasDone = item.done;
+    item.done = !wasDone;
+    if(item.done){
+      if(recordDone){
+        var now = new Date();
+        item.doneAt = { y: now.getFullYear(), m: now.getMonth() + 1, d: now.getDate() };
+      }
+    } else {
+      item.doneAt = null;
+    }
+    var idx = items.indexOf(item);
+    if(idx > -1){
+      items.splice(idx, 1);
+      if(item.done){
+        var insertAt = items.findIndex(function(it){ return it.done; });
+        if(insertAt === -1) insertAt = items.length;
+        items.splice(insertAt, 0, item);
+      } else {
+        items.unshift(item);
+      }
+    }
+    save();
+    render();
+  }
+
+  function removeItem(id){
+    var wrapper = listEl.querySelector('.row-wrapper[data-id="'+id+'"]');
+    if(wrapper){
+      wrapper.style.transition = 'max-height .18s ease, opacity .18s ease';
+      wrapper.style.maxHeight = wrapper.offsetHeight + 'px';
+      requestAnimationFrame(function(){
+        wrapper.style.maxHeight = '0px';
+        wrapper.style.opacity = '0';
+      });
+      wrapper.addEventListener('transitionend', function(){
+        items = items.filter(function(it){ return it.id !== id; });
+        save();
+        render();
+      }, {once:true});
+    } else {
+      items = items.filter(function(it){ return it.id !== id; });
+      save();
+      render();
+    }
+  }
+
+  function closeOpenRow(){
+    if(openId == null) return;
+    var row = listEl.querySelector('.row[data-id="'+openId+'"]');
+    if(row) row.style.transform = 'translateX(0px)';
+    openId = null;
+  }
+
+  var addPriority = 0;
+  setSwatchState(markInput, addPriority);
+  markInput.addEventListener('click', function(){
+    addPriority = (addPriority + 1) % MARK_TEXT.length;
+    setSwatchState(markInput, addPriority);
+  });
+
+  function addItem(keepFocus){
+    var text = nameInput.value.trim();
+    if(!text) { if(keepFocus) nameInput.focus(); return; }
+    items.unshift({id:uid(), priority:addPriority, text:text, done:false});
+    nameInput.value = '';
+    addPriority = 0;
+    setSwatchState(markInput, 0);
+    save();
+    render();
+    if(keepFocus) nameInput.focus();
+  }
+
+  addBtn.addEventListener('click', function(){ addItem(true); });
+  nameInput.addEventListener('keydown', function(e){
+    if(e.key === 'Enter'){ e.preventDefault(); addItem(false); nameInput.blur(); }
+  });
+
+  var LONGPRESS_MS = 480;
+  var MOVE_THRESHOLD = 10;
+
+  function attachRowGestures(wrapper, row, item){
+    var pointerId = null;
+    var state = 'idle';
+    var startX = 0, startY = 0, base = 0;
+    var longPressTimer = null;
+    var ghost = null;
+    var rowHeight = 0;
+    var lastTargetPos = -1;
+    var scrollStartTop = 0;
+    var lastMoveTs = 0, lastMoveY = 0, velocityY = 0;
+
+    function clearTimer(){
+      if(longPressTimer){ clearTimeout(longPressTimer); longPressTimer = null; }
+    }
+
+    function onPointerDown(e){
+      if(e.target === row.querySelector('.mark-cell')) return;
+      if(state !== 'idle') return;
+      cancelMomentum();
+      pointerId = e.pointerId;
+      startX = e.clientX;
+      startY = e.clientY;
+      scrollStartTop = listEl.scrollTop;
+      base = (openId === item.id) ? OPEN_OFFSET : 0;
+      state = 'pending';
+      row.classList.add('no-transition');
+      longPressTimer = setTimeout(function(){
+        if(state !== 'pending') return;
+        startDrag(e);
+      }, LONGPRESS_MS);
+    }
+
+    function startDrag(e){
+      state = 'dragging';
+      clearTimer();
+      try{ row.setPointerCapture(pointerId); }catch(err){}
+      if(navigator.vibrate) navigator.vibrate(12);
+      var rect = row.getBoundingClientRect();
+      rowHeight = rect.height;
+
+      ghost = row.cloneNode(true);
+      ghost.classList.add('drag-ghost');
+      ghost.style.width = rect.width + 'px';
+      ghost.style.top = rect.top + 'px';
+      ghost.style.left = rect.left + 'px';
+      document.body.appendChild(ghost);
+
+      row.classList.add('placeholder');
+      row.style.transform = 'translateX(0px)';
+      wrapper.style.height = rowHeight + 'px';
+      lastTargetPos = -1;
+    }
+
+    function onPointerMove(e){
+      if(state === 'pending'){
+        var dx = e.clientX - startX, dy = e.clientY - startY;
+        if(Math.abs(dx) > MOVE_THRESHOLD || Math.abs(dy) > MOVE_THRESHOLD){
+          clearTimer();
+          if(Math.abs(dx) > Math.abs(dy)){
+            state = 'swiping';
+            try{ row.setPointerCapture(pointerId); }catch(err){}
+          } else {
+            state = 'scrolling';
+            row.classList.remove('no-transition');
+            lastMoveTs = e.timeStamp;
+            lastMoveY = e.clientY;
+            velocityY = 0;
+            try{ row.setPointerCapture(pointerId); }catch(err){}
+          }
+        } else {
+          return;
+        }
+      }
+      if(state === 'swiping'){
+        var ddx = e.clientX - startX;
+        var maxBound = (base < 0) ? 0 : COMPLETE_OFFSET;
+        var t = Math.max(OPEN_OFFSET, Math.min(maxBound, base + ddx));
+        row.style.transform = 'translateX(' + t + 'px)';
+        return;
+      }
+      if(state === 'scrolling'){
+        var maxScroll = listEl.scrollHeight - listEl.clientHeight;
+        var next = scrollStartTop - (e.clientY - startY);
+        listEl.scrollTop = Math.max(0, Math.min(maxScroll, next));
+        var dt = e.timeStamp - lastMoveTs;
+        if(dt > 0){
+          var instV = (e.clientY - lastMoveY) / dt;
+          velocityY = velocityY * 0.7 + instV * 0.3;
+        }
+        lastMoveTs = e.timeStamp;
+        lastMoveY = e.clientY;
+        return;
+      }
+      if(state === 'dragging'){
+        var gy = e.clientY - (rowHeight/2);
+        ghost.style.top = gy + 'px';
+        var others = Array.prototype.slice.call(listEl.children).filter(function(s){ return s !== wrapper; });
+        var cy = e.clientY;
+        var targetPos = others.length;
+        for(var i=0;i<others.length;i++){
+          var r = others[i].getBoundingClientRect();
+          var mid = r.top + r.height/2;
+          if(cy < mid){ targetPos = i; break; }
+        }
+        if(targetPos !== lastTargetPos){
+          lastTargetPos = targetPos;
+          if(targetPos >= others.length){
+            listEl.appendChild(wrapper);
+          } else {
+            listEl.insertBefore(wrapper, others[targetPos]);
+          }
+          moveItemInArray(item.id, targetPos);
+          // insertBefore/appendChild on the captured element's ancestor releases
+          // pointer capture even for a same-parent reorder; re-acquire it so
+          // subsequent moves in this same drag keep being tracked.
+          try{ row.setPointerCapture(pointerId); }catch(err){}
+        }
+      }
+    }
+
+    function moveItemInArray(id, targetIndex){
+      var idx = items.findIndex(function(it){ return it.id === id; });
+      if(idx === -1) return;
+      var it = items.splice(idx,1)[0];
+      items.splice(targetIndex,0,it);
+    }
+
+    function endGesture(){
+      if(state === 'pending'){
+        clearTimer();
+        row.classList.remove('no-transition');
+        handleTap();
+      } else if(state === 'swiping'){
+        row.classList.remove('no-transition');
+        var cur = row.style.transform;
+        var val = parseFloat(cur.replace('translateX(','')) || 0;
+        if(val <= OPEN_OFFSET/2){
+          row.style.transform = 'translateX('+OPEN_OFFSET+'px)';
+          if(openId && openId !== item.id) closeOpenRow();
+          openId = item.id;
+        } else if(val >= COMPLETE_THRESHOLD){
+          row.style.transform = 'translateX(0px)';
+          if(openId === item.id) openId = null;
+          item.priority = 0;
+          toggleDone(item);
+        } else {
+          row.style.transform = 'translateX(0px)';
+          if(openId === item.id) openId = null;
+        }
+      } else if(state === 'scrolling'){
+        startMomentum(-velocityY);
+      } else if(state === 'dragging'){
+        row.classList.remove('placeholder');
+        row.classList.add('no-transition');
+        wrapper.style.height = '';
+        if(ghost){ ghost.remove(); ghost = null; }
+        save();
+        requestAnimationFrame(function(){ row.classList.remove('no-transition'); });
+      }
+      state = 'idle';
+      pointerId = null;
+    }
+
+    function handleTap(){
+      if(openId != null){ closeOpenRow(); }
+    }
+
+    function onPointerUp(e){
+      if(pointerId !== null && e.pointerId !== pointerId) return;
+      endGesture();
+    }
+    function onPointerCancel(e){
+      if(pointerId !== null && e.pointerId !== pointerId) return;
+      if(state === 'dragging'){
+        row.classList.remove('placeholder');
+        wrapper.style.height = '';
+        if(ghost){ ghost.remove(); ghost = null; }
+      } else if(state === 'swiping'){
+        row.style.transform = (openId === item.id) ? 'translateX('+OPEN_OFFSET+'px)' : 'translateX(0px)';
+      }
+      row.classList.remove('no-transition');
+      state = 'idle';
+      pointerId = null;
+    }
+
+    row.addEventListener('pointerdown', onPointerDown);
+    row.addEventListener('pointermove', onPointerMove);
+    row.addEventListener('pointerup', onPointerUp);
+    row.addEventListener('pointercancel', onPointerCancel);
+  }
+
+  render();
+})();
+</script>
